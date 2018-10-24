@@ -12,7 +12,18 @@ namespace OnePlusBot.Modules
         [Command("echo")]
         [Summary("Echoes back the remainder argument of the command.")]
         [RequireUserPermission(GuildPermission.ManageMessages)]
-        public Task EchoAsync([Remainder] string text)
-            => ReplyAsync(text);
+        public async Task EchoAsync([Remainder] string text)
+        {
+            var embed = new EmbedBuilder();
+
+            embed.WithTitle("Message by " + Context.User.Username);
+
+            embed.WithDescription(text);
+
+            embed.WithColor(new Color(0, 255, 0));
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+        } 
+
     }
 }

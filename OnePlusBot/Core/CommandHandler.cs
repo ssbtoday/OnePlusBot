@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Text.RegularExpressions;
+using OnePlusBot.Core.LevelingSystem;
+using OnePlusBot.Core.UserAccounts;
 
 namespace OnePlusBot
 {
@@ -53,13 +55,31 @@ namespace OnePlusBot
                 }
             }
 
+            var context = new SocketCommandContext(_bot, message);
+            if (context.User.IsBot) return;
 
-            if (!(message.HasCharPrefix(';', ref argPos) ||
-                message.HasMentionPrefix(_bot.CurrentUser, ref argPos))|| 
-                message.Author.IsBot)
+
+            // Mute check
+
+            var userAccount = UserAccounts.GetAccount(context.User);
+
+            if (userAccount.IsMuted)
+
+            {
+
+                await context.Message.DeleteAsync();
+
                 return;
 
-            var context = new SocketCommandContext(_bot, message);
+            }
+
+            // Leveling
+            Leveling.UserSentMessage((SocketGuildUser) context.User, (SocketTextChannel) context.Channel);
+
+
+            if (!(message.HasCharPrefix(';', ref argPos) ||
+                message.HasMentionPrefix(_bot.CurrentUser, ref argPos)))
+                return;
 
             var result = await _commands.ExecuteAsync(
                 context: context,

@@ -9,10 +9,10 @@ using System.IO;
 
 namespace OnePlusBot
 {
-    public class Core
+    public class Boot
     {
        public static void Main(string[] args) 
-            => new Core().MainAsync().GetAwaiter().GetResult();
+            => new Boot().MainAsync().GetAwaiter().GetResult();
 
         private DiscordSocketClient _bot;
         private string token;
